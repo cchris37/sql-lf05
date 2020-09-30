@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 28. Sep 2020 um 14:53
+-- Erstellungszeit: 29. Sep 2020 um 11:45
 -- Server-Version: 10.4.14-MariaDB
 -- PHP-Version: 7.4.10
 
@@ -115,6 +115,25 @@ INSERT INTO `bestellungzutat` (`BESTELLNR`, `ZUTATENNR`, `MENGE`) VALUES
 (11, 1012, 5),
 (11, 5001, 2),
 (12, 1010, 15);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `ernährungskategorien`
+--
+
+CREATE TABLE `ernährungskategorien` (
+  `ernährungs_id` int(11) NOT NULL,
+  `kategorie` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `ernährungskategorien`
+--
+
+INSERT INTO `ernährungskategorien` (`ernährungs_id`, `kategorie`) VALUES
+(223, 'vegan'),
+(224, 'low carb');
 
 -- --------------------------------------------------------
 
@@ -261,6 +280,25 @@ INSERT INTO `zutat` (`ZUTATENNR`, `BEZEICHNUNG`, `EINHEIT`, `NETTOPREIS`, `BESTA
 (7043, 'Gemüsebrühe', 'Würfel', '0.20', 4000, 101, 1, '0.50', '0.50', NULL),
 (9001, 'Tofu-Würstchen', 'Stück', '1.80', 20, 103, 252, '7.00', '17.00', NULL);
 
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `zutatkat`
+--
+
+CREATE TABLE `zutatkat` (
+  `kategorienr` int(11) DEFAULT NULL,
+  `zutatnr` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `zutatkat`
+--
+
+INSERT INTO `zutatkat` (`kategorienr`, `zutatnr`) VALUES
+(223, 1001),
+(224, 1001);
+
 --
 -- Indizes der exportierten Tabellen
 --
@@ -284,6 +322,12 @@ ALTER TABLE `bestellung`
 ALTER TABLE `bestellungzutat`
   ADD PRIMARY KEY (`BESTELLNR`,`ZUTATENNR`),
   ADD KEY `ZUTATENNR` (`ZUTATENNR`);
+
+--
+-- Indizes für die Tabelle `ernährungskategorien`
+--
+ALTER TABLE `ernährungskategorien`
+  ADD PRIMARY KEY (`ernährungs_id`);
 
 --
 -- Indizes für die Tabelle `kunde`
@@ -319,6 +363,13 @@ ALTER TABLE `zutat`
   ADD KEY `allergiezugehörigkeit_id` (`allergiezugehörigkeit_id`);
 
 --
+-- Indizes für die Tabelle `zutatkat`
+--
+ALTER TABLE `zutatkat`
+  ADD KEY `zutatnr` (`zutatnr`),
+  ADD KEY `kategorienr` (`kategorienr`);
+
+--
 -- AUTO_INCREMENT für exportierte Tabellen
 --
 
@@ -333,6 +384,12 @@ ALTER TABLE `allergene`
 --
 ALTER TABLE `bestellung`
   MODIFY `BESTELLNR` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT für Tabelle `ernährungskategorien`
+--
+ALTER TABLE `ernährungskategorien`
+  MODIFY `ernährungs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=225;
 
 --
 -- AUTO_INCREMENT für Tabelle `rezept`
@@ -370,6 +427,13 @@ ALTER TABLE `rezeptzutat`
 ALTER TABLE `zutat`
   ADD CONSTRAINT `zutat_ibfk_1` FOREIGN KEY (`LIEFERANT`) REFERENCES `lieferant` (`LIEFERANTENNR`),
   ADD CONSTRAINT `zutat_ibfk_2` FOREIGN KEY (`allergiezugehörigkeit_id`) REFERENCES `allergene` (`allergie_id`);
+
+--
+-- Constraints der Tabelle `zutatkat`
+--
+ALTER TABLE `zutatkat`
+  ADD CONSTRAINT `zutatkat_ibfk_1` FOREIGN KEY (`zutatnr`) REFERENCES `zutat` (`ZUTATENNR`),
+  ADD CONSTRAINT `zutatkat_ibfk_2` FOREIGN KEY (`kategorienr`) REFERENCES `ernährungskategorien` (`ernährungs_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
